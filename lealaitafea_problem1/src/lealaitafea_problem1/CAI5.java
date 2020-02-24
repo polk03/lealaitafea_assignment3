@@ -1,0 +1,221 @@
+package lealaitafea_problem1;
+
+import java.security.SecureRandom;
+import java.util.*;
+
+ public class CAI5
+ {
+	 SecureRandom rand = new SecureRandom();
+
+	 int product;
+	 int questionsAnswered;
+	 int questionsAnsweredCorrectly;
+	 int difficultyLevel;
+	 int arithmeticProblem; 
+	 private String unit;
+	 
+	 
+ 
+ public void readDifficulty()
+ {
+ Scanner difficultyInput = new Scanner( System.in );
+ System.out.println( "Enter difficulty 1, 2, 3, or 4" );
+ difficultyLevel = difficultyInput.nextInt();
+ 
+ }
+ public void readProblemType()
+ {
+	 do
+	  {
+	  
+	  System.out.println( "1 = addition" );
+	  System.out.println( "2 = subtraction" );
+	  System.out.println( "3 = multiplication" );
+	  System.out.println( "4 = division" );
+	  System.out.println( "5 = mixed operations" );
+	  System.out.println( "Enter the operation (1 to 5): " );	 
+	  Scanner input = new Scanner( System.in );
+	  arithmeticProblem = input.nextInt();
+	  } while ( ( arithmeticProblem < 1 ) || ( arithmeticProblem > 5 ) );
+	 
+	
+	 }
+ 
+ public void quiz()
+ {
+ readProblemType();
+ readDifficulty();
+ askQuestion(); 
+ readResponse();
+ } 
+  public void readResponse()
+ {
+	 Scanner input = new Scanner( System.in );
+	 int answer; 
+	 answer = input.nextInt();
+
+	 while ( answer != -1 )
+	 {
+		 isAnswerCorrect( answer );	 
+		 answer = input.nextInt();
+	 
+	 }
+ 
+ }
+  public void generateQuestionArgument()
+  {
+ 	  String problemType = "";
+ 	  int limit = 0;
+ 	  if ( difficultyLevel == 1 )
+ 	 	 limit = 10;
+ 	  else if ( difficultyLevel == 2 )
+ 	 	 limit = 100;
+ 	  else if ( difficultyLevel == 3 )
+ 	 	 limit = 1000;
+ 	  else if ( difficultyLevel == 4 )
+ 	 	 limit = 10000;
+ 	  int number1 = rand.nextInt( limit );
+ 	  int number2 = rand.nextInt( limit );
+ 	  	  
+ 	  product = number1 * number2;
+ 	  	 
+ 	  	 int ap = arithmeticProblem;
+ 		 
+ 	  	 if (ap == 5)
+ 		 		 ap = 1 + rand.nextInt(4);
+ 		 switch ( ap )
+ 		 {
+ 		 case 1:
+ 			 problemType = "plus";
+ 			 product = number1 + number2;
+ 			 break;
+ 		 case 2:
+ 			 problemType = "minus";
+ 			 product = number1 - number2;
+ 			 break;
+ 		 case 3:
+ 			 problemType = "times";
+ 			 product = number1 * number2;
+ 			 break;
+ 		 case 4:
+ 			if ( number2 == 0 )
+ 				number2 = 1;
+ 			 problemType = "divide";
+ 			 product = number1 / number2;
+ 			 break;
+ 		 }
+ 		 
+ 		 if ( questionsAnswered <= 9 )
+ 		  {
+ 		 	 System.out.printf( "How much is %d %s %d?\n",number1, problemType, number2 );
+ 		  }
+  
+  }
+ 
+  public void askQuestion()
+ {
+
+	  generateQuestionArgument();
+ 
+ } 
+
+ public String displayCompletionMessage( boolean correct )
+  {
+	 SecureRandom rand = new SecureRandom();
+	 if ( correct )
+		 switch ( rand.nextInt( 4 ) )
+		 {
+		 	case 0:
+		 		return( "Very good!" );
+ 
+		 	case 1:
+		 		return( "Excellent!" );
+ 
+		 	case 2:
+		 		return( "Nice work!" );
+ 
+		 	case 3:
+		 		return( "Keep up the good work!" );
+		 }
+	 	switch ( rand.nextInt( 4 ) )
+	 	{
+	 		case 0:
+	 		   return( "No. Please try again." );
+
+	 		case 1:
+	 			return( "Wrong. Try once more." );
+	 		case 2:
+	 			return( "Don't give up!" );
+	  
+	 		case 3: default:
+	 			return( "No. Keep trying." );
+   } 
+} 
+ public double percentageCorrect()
+ {
+	
+	 return (double) questionsAnsweredCorrectly/ questionsAnswered;
+	 
+ }
+ 
+ 
+ public void isAnswerCorrect( int answer )
+ {
+	 questionsAnswered++;
+	 if ( answer != product )
+	 displayInorrectResponse();
+ else
+ {
+	 questionsAnsweredCorrectly++;
+	 if ( questionsAnswered < 10 )
+	 displayCorrectResponse();
+ } 
+	 if ( questionsAnswered >= 10 )
+		  {
+		  if (percentageCorrect() > 0.75)
+		  {
+			  System.out.printf( "You scored a %d\n",( int ) ( percentageCorrect()*100));
+			  System.out.println( "Congratulations, you are ready to go to the next level!");
+		  }
+			  
+		  else
+		  {
+			  System.out.printf( "You scored a %d\n",( int ) ( percentageCorrect()*100));
+			  System.out.println( "Please ask your instructor for extra help." );			  
+			  questionsAnswered = 0;
+			  questionsAnsweredCorrectly = 0;
+		  }
+			  
+		  Scanner input = new Scanner(System.in); 
+			 System.out.println( "Would you like to try a new set of problems? (yes or no)");
+			 unit = input.nextLine();
+			 if(unit.equals("yes"))
+			 {				 
+				 quiz();
+				 
+			 }
+			 else if (unit.equals("no"))
+			 {
+				 System.out.println( "Exiting");
+				 System. exit(0);
+			 }
+		  }
+	
+	 
+ }
+ public void displayCorrectResponse()
+ {
+	 System.out.println( displayCompletionMessage( true ));	 
+	 askQuestion();
+ } 
+ public void displayInorrectResponse()
+ {
+	 System.out.println( displayCompletionMessage( false ));
+	 askQuestion();
+ }
+ public static void main( String args[] )
+ {
+ CAI5 app = new CAI5();
+ app.quiz();
+ } 
+ } 
